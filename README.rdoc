@@ -1,0 +1,83 @@
+= Fill
+
+Rails 2.3.4 introduced db/seeds. Basically that means that the rake task
+"rake db:seed" will run db/seeds.rb, so you can have a centralized place
+to prepare your database by adding seed data.
+
+"Fill" takes this one step further and provides methods to easily define
+data in db/seeds.rb. Here's how:
+
+  Fill.database do  |db|
+
+    db.produce :projects do
+      10.times { Factory(:project) }
+    end
+
+  end
+
+(I use factory_girl here, do whatever you like off course)
+
+Now, when running "rake db:seed", it'll delete all records in the Project
+model and run the contents off the produce block. It'll also measure how
+long it took, resulting in this output:
+
+  +-------+--------+---------+----------+
+  | After | Before | Models  | Time     |
+  +-------+--------+---------+----------+
+  | 10    | 0      | Project | 0.018627 |
+  +-------+--------+---------+----------+
+
+== Why?
+
+At my company, we taught testers, customers and developers to use
+webistrano and run the db:seed" rake task themselves. This way, they can 
+test and experiment as much as they want, and they easily reset the
+database when they fucked it up.
+
+== Usage
+
+=== db.produce
+
+By specifying a block, do whatever you need to fill a model.
+
+Usage: db.produce :model1, :model2 do ... end
+
+Specify the models that you want. The models that you specified will be
+emptied, which is handy if you're building relational models, like users
+and their memberships.
+
+=== db.fill
+
+A simple list of values.
+
+Usage: db.fill :model, :attribute, "value 1", "value 2", "value 3"
+
+For simple models with only one distinct attribute, you can just specify
+the model, attribute and the values.
+
+See also the iain/root_table plugin if you have many of these.
+
+=== db.invoke
+
+Invoke a rake task.
+
+Usage: db.invoke "some:task", :model
+
+=== Global options
+
+* :needs    specify one or many dependencies, tables to be filled before
+            filling the ones you're specifying now.
+* :delete   set to false if you don't want to delete all records before
+            continuing
+
+== Installation
+
+Add this to config/environment.rb:
+
+  config.gem "iain-fill", :lib => "fill", :source => "http://gems.github.com"
+
+And run "rake gems:install" and you're done.
+
+---
+
+Made by Iain, Released under the MIT License
