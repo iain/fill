@@ -246,4 +246,93 @@ describe Fill do
 
   end
 
+  describe "the db.fill method" do
+
+    it "should call create! on the model" do
+      mock(Project).create!(:name => "A")
+      mock(Project).create!(:name => "B")
+      Fill.database do |db|
+        db.fill :projects, :name, "A", "B"
+      end
+    end
+
+    it "should have the needs option" do
+      Fill.database do |db|
+        db.fill :projects, :name, "A", :needs => :users
+        db.produce(:users) do
+          mock(Project).create!(:name => "A")
+        end
+      end
+    end
+
+    it "should have the name option" do
+      mock(Project).create!(:name => "A")
+      Fill.database do |db|
+        db.fill :projects, :name, "A", :name => "AWESOME"
+      end
+      Output.output.first.should include("AWESOME")
+    end
+
+    it "should delete too" do
+      mock(Project).delete_all
+      mock(Project).create!(:name => "A")
+      Fill.database do |db|
+        db.fill :projects, :name, "A"
+      end
+    end
+
+    it "should not delete when delete option is false" do
+      dont_allow(Project).delete_all
+      mock(Project).create!(:name => "A")
+      Fill.database do |db|
+        db.fill :projects, :name, "A", :delete => false
+      end
+    end
+
+  end
+
+  describe "the db.invoke method" do
+
+    before { stub(Rake::Task)["some:task"].stub!.invoke }
+
+    it "should invoke a task" do
+      mock(Rake::Task)["some:task"].mock!.invoke
+      Fill.database do |db|
+        db.invoke "some:task", :projects
+      end
+    end
+
+    it "should delete the model" do
+      mock(Project).delete_all
+      Fill.database do |db|
+        db.invoke "some:task", :projects
+      end
+    end
+
+    it "should accept the need option" do
+      Fill.database do |db|
+        db.invoke "some:task", :projects, :needs => :users
+        db.produce(:users) do
+          mock(Project).delete_all
+        end
+      end
+    end
+
+    it "should accept the name option" do
+      Fill.database do |db|
+        db.invoke "some:task", :projects, :name => "MYNAME"
+      end
+      Output.output.first.should include("MYNAME")
+    end
+
+    it "should not delete when delete option is false" do
+      dont_allow(Project).delete_all
+      Fill.database do |db|
+        db.invoke "some:task", :projects, :delete => false
+      end
+    end
+
+
+  end
+
 end

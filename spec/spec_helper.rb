@@ -1,3 +1,4 @@
+require 'rake'
 require File.dirname(__FILE__) + '/../lib/fill'
 
 Spec::Runner.configure do |config|
