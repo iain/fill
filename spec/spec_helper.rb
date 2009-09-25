@@ -1,6 +1,5 @@
 require File.dirname(__FILE__) + '/../lib/fill'
 
-require 'spec'
 Spec::Runner.configure do |config|
   config.mock_with :rr
 end
@@ -16,10 +15,7 @@ end
 
 class ActiveRecordMimic
   class << self
-    def delete_all; 1; end
-    def count; 2; end
-    def human_name; self.inspect; end
-    def create!; end
+    attr_reader :delete_all, :count, :create, :human_name
   end
 end
 
@@ -32,9 +28,8 @@ class Output
     end
   end
 end
+Fill.out = Output
 
-class User < ActiveRecordMimic; end
-
-class Project < ActiveRecordMimic; end
-
+class User       < ActiveRecordMimic; end
+class Project    < ActiveRecordMimic; end
 class Membership < ActiveRecordMimic; end

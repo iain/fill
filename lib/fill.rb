@@ -5,6 +5,8 @@ require File.dirname(__FILE__) + '/fill/procedure'
 
 module Fill
 
+  VERSION = File.read(File.dirname(__FILE__) + '/../VERSION').chomp
+
   class << self
 
 
