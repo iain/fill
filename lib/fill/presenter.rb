@@ -42,7 +42,7 @@ module Fill
     end
 
     def present_hash
-      hash.map do |row|
+      presentable.map do |row|
         row.map { |key, value| "#{key}: #{value}" }.join(" - ")
       end
     end
