@@ -27,6 +27,10 @@ long it took, resulting in this output:
   | 10    | 0      | Project | 0.018627 |
   +-------+--------+---------+----------+
 
+You'll need to install hirb for this pretty output. Otherwise it won't print
+out this pretty table. I recommend using Hirb anyway. Find it at
+http://github.com/cldwalker/hirb
+
 == Why?
 
 At my company, we taught testers, customers and developers to use
@@ -40,17 +44,28 @@ database when they fucked it up.
 
 By specifying a block, do whatever you need to fill a model.
 
-Usage: db.produce :model1, :model2 do ... end
+Example:
+
+  db.produce :users, :memberships do
+    10.times do
+      user = Factory(:user)
+      membership = Factory(:membership, :user => user)
+    end
+  end
 
 Specify the models that you want. The models that you specified will be
 emptied, which is handy if you're building relational models, like users
 and their memberships.
 
+The models are named *plural*.
+
 === db.fill
 
-A simple list of values.
+Provide a simple list of values.
 
-Usage: db.fill :model, :attribute, "value 1", "value 2", "value 3"
+Example
+
+  db.fill :projects, :name, "Foo", "Bar", "Baz", "etc"
 
 For simple models with only one distinct attribute, you can just specify
 the model, attribute and the values.
@@ -61,14 +76,47 @@ See also the iain/root_table plugin if you have many of these.
 
 Invoke a rake task.
 
-Usage: db.invoke "some:task", :model
+  db.invoke "some:task", :projects
+
+I use a seperate rake task whenever I need to import files. Of course you
+can do that in the +db.produce+, but that clutters your seeds.rb.
 
 === Global options
 
-* :needs    specify one or many dependencies, tables to be filled before
-            filling the ones you're specifying now.
-* :delete   set to false if you don't want to delete all records before
-            continuing
+These options work on all above mentioned methods.
+
+==== :needs
+
+Specify one or many dependencies, tables to be filled before filling the ones
+you're specifying now.
+
+Example
+
+  db.produce :memberships, :needs => :users do
+    User.all.each { |user| Factory(:membership, :user => user) }
+  end
+
+==== :delete
+
+Set to false if you don't want to delete all records before filling it.
+
+Example:
+
+  db.invoke "import:zipcodes", :zips, :delete => false
+
+In this example, the zipcodes import takes a long time to complete, so it
+doesn't insert them when the database is already filled.
+
+==== :name
+
+The output uses Rails i18n methods to determine how the output calls the
+models filled, but if you want to specify your own name, use this option.
+
+Example:
+
+  db.produce :users, :name => "Accounts" do
+    ....
+  end
 
 == Installation
 
@@ -76,8 +124,8 @@ Add this to config/environment.rb:
 
   config.gem "iain-fill", :lib => "fill", :source => "http://gems.github.com"
 
-And run "rake gems:install" and you're done.
+And run "+rake gems:install+" and you're done.
 
 ---
 
-Made by Iain, Released under the MIT License
+Made by Iain, http://iain.nl/, Released under the MIT License
