@@ -1,7 +1,12 @@
 Manifest
 README.rdoc
 Rakefile
+VERSION
+fill.gemspec
 lib/fill.rb
 lib/fill/configure.rb
 lib/fill/presenter.rb
 lib/fill/procedure.rb
+spec/fill_spec.rb
+spec/spec.opts
+spec/spec_helper.rb
