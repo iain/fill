@@ -14,15 +14,23 @@ module Fill
       presenter.to_s
     end
 
+    def self.hirb?
+      require 'hirb'
+      true
+    rescue LoadError
+      false
+    end
+
+    def self.clear!
+      @presenter = nil
+    end
+
     def add(data)
       presented.push(data) if data && !presented.include?(data)
     end
 
     def hirb?
-      require 'hirb'
-      true
-    rescue LoadError
-      false
+      self.class.hirb?
     end
 
     def presented
@@ -43,7 +51,14 @@ module Fill
 
     def present_hash
       presentable.map do |row|
-        row.map { |key, value| "#{key}: #{value}" }.join(" - ")
+        format_row(row).join(" - ")
+      end
+    end
+
+    def format_row(row)
+      row.map do |key, value|
+        value = "%.2f" % value if key == "Time"
+        "#{key}: #{value}"
       end
     end
 

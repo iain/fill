@@ -2,7 +2,7 @@ module Fill
 
   class Procedure
 
-    attr_accessor :block
+    attr_accessor :block, :options
 
     def initialize(models, options = {}, &block)
       @block   = block
@@ -19,12 +19,19 @@ module Fill
     end
 
     def human_models
-      @options[:name] ||
-      models.map { |model| model.respond_to?(:human_name) ? model.human_name : model.to_s }.join(', ')
+      @human_models ||= (options[:name] || humanize_models)
+    end
+
+    def humanize_models
+      models.map { |model| i18n_name(model) }.join(', ')
+    end
+
+    def i18n_name(model)
+      model.respond_to?(:human_name) ? model.human_name : model.to_s
     end
 
     def delete_all
-      models.each { |model| model.delete_all } if @options[:delete]
+      models.map { |model| model.delete_all }
     end
 
     def models
@@ -36,8 +43,8 @@ module Fill
     end
 
     def perform
-      @before = count
-      @time   = Fill.time { self.delete_all; block.call }
+      @before = options[:delete] ? delete_all : count
+      @time   = Fill.time { block.call }
       @after  = count
       Presenter.present self
       true
