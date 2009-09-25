@@ -27,8 +27,8 @@ long it took, resulting in this output:
   | 10    | 0      | Project | 0.018627 |
   +-------+--------+---------+----------+
 
-You'll need to install hirb for this pretty output. Otherwise it won't print
-out this pretty table. I recommend using Hirb anyway. Find it at
+You'll need to install hirb for this pretty output. Otherwise it'll print
+out somthing simpler. I recommend using Hirb anyway. Find it at
 http://github.com/cldwalker/hirb
 
 == Why?
@@ -79,7 +79,7 @@ Invoke a rake task.
   db.invoke "some:task", :projects
 
 I use a seperate rake task whenever I need to import files. Of course you
-can do that in the +db.produce+, but that clutters your seeds.rb.
+can do that in the db.produce, but that clutters your seeds.rb.
 
 === Global options
 
@@ -122,10 +122,15 @@ Example:
 
 Add this to config/environment.rb:
 
-  config.gem "iain-fill", :lib => "fill", :source => "http://gems.github.com"
+  config.gem "fill", :source => "http://gemcutter.org"
 
-And run "+rake gems:install+" and you're done.
+Or install it by hand:
+
+  # unless you added gemcutter.org to your sources:
+  gem install gemcutter
+  gem tumble
+  gem install fill
 
 ---
 
-Made by Iain, http://iain.nl/, Released under the MIT License
+Copyright 2009, Iain Hecker - http://iain.nl - Released under the MIT License

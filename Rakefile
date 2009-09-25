@@ -12,11 +12,11 @@ end
 begin
   require 'echoe'
   Echoe.new('fill', File.read('VERSION').chomp) do |p|
-    p.description = "Fill your database"
-    p.url = "http://iain.nl"
+    p.description = "Simple DSL for filling (seeding) your database"
+    p.url = "http://github.com/iain/fill"
     p.author = "iain"
     p.email = "iain@iain.nl"
-    p.ignore_pattern = []
+    p.ignore_pattern = [ "pkg/*" ]
     p.development_dependencies = []
     p.runtime_dependencies = []
   end
