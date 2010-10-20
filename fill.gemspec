@@ -6,6 +6,6 @@ Gem::Specification.new do |s|
  s.email = 'arie@finalist.com'
  s.homepage = 'http://github.com/Arie/fill.git'
  s.authors = ["Iain Hecker"]
- s.file = Dir['Rakefile', '{lib,spec}/**/*', 'README*']
+ s.files = Dir['Rakefile', '{lib,spec}/**/*', 'README*']
 end
 
