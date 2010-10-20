@@ -1,4 +1,4 @@
-require 'active_support'
+require 'activesupport'
 require File.dirname(__FILE__) + '/fill/configure'
 require File.dirname(__FILE__) + '/fill/presenter'
 require File.dirname(__FILE__) + '/fill/procedure'
